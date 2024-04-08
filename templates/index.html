@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Datos de Sensores</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div id="container">
+        <h1>Datos de Sensores</h1>
+        <ul id="sensor-list">
+            <!-- Los datos de los sensores se actualizarán aquí -->
+        </ul>
+        <p id="hora"></p>
+    </div>
+    <script>
+        
+
+        // Función para actualizar los datos de los sensores
+        function actualizarDatosSensores() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/datos-sensores", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var datos = JSON.parse(xhr.responseText);
+                    var listaSensores = document.getElementById("sensor-list");
+                    listaSensores.innerHTML = ""; // Limpiar la lista antes de actualizar
+                    Object.keys(datos).forEach(function(nombre) {
+                        var item = document.createElement("li");
+                        item.innerHTML = "<strong>" + nombre + ":</strong> " + datos[nombre];
+                        listaSensores.appendChild(item);
+                    });
+                }
+            };
+            xhr.send();
+        }
+
+        // Llamar a la función para actualizar los datos cada 3 segundos
+        setInterval(actualizarDatosSensores, 3000);
+
+        // Llamar a la función mostrarHora cuando se carga la página
+        mostrarHora();
+    </script>
+</body>
+</html>
